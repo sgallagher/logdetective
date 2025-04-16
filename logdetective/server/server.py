@@ -2,14 +2,14 @@ import asyncio
 import json
 import os
 import re
-from tempfile import TemporaryFile
+from contextlib import asynccontextmanager
 from typing import List, Annotated, Tuple, Dict, Any
 from io import BytesIO
 
 
 import matplotlib
 import matplotlib.pyplot
-from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi import FastAPI, HTTPException, Depends, Header, Request
 
 from fastapi.responses import StreamingResponse
 from fastapi.responses import Response as BasicResponse

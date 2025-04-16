@@ -72,7 +72,14 @@ async def process_gitlab_job_event(
         raise
 
     # Submit log to Log Detective and await the results.
-    staged_response = await submit_to_log_detective(app, log_url)
+    response = await submit_to_log_detective(app, log_url)
+    LOG.debug(f"Response: {response}")
+
+    staged_response = StagedResponse(
+        explanation=response["explanation"],
+        snippets=response["snippets"],
+        response_certainty=response["certainty"],
+    )
 
     # Add the Log Detective response as a comment to the merge request
     await comment_on_mr(app, project, merge_request_iid, job, log_url, staged_response)
