@@ -46,6 +46,7 @@ from logdetective.server.models import (
     TimePeriod,
 )
 from logdetective.server import plot
+from logdetective.server.database.base import init_async as init_db_async
 from logdetective.server.database.models import (
     Comments,
     EndpointType,
@@ -78,6 +79,10 @@ async def lifespan(fapp: FastAPI):
             total=int(LOG_SOURCE_REQUEST_TIMEOUT), connect=3.07
         )
     )
+    
+    # Set up the database connection
+    async_db_engine = await init_db_async()
+
     yield
     await fapp.http.close()
 

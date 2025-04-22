@@ -14,7 +14,7 @@ RUN dnf install -y \
     python3-gitlab \
     python3-diskcache \
     python3-sqlalchemy \
-    python3-psycopg2 \
+    python3-asyncpg \
     python3-alembic \
     python3-matplotlib \
     python3-aiohttp \

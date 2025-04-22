@@ -3,12 +3,12 @@ from contextlib import contextmanager
 from typing import Generator, Optional
 
 import pytest
-from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import sessionmaker
 from flexmock import flexmock
 
 from logdetective.server.database import base
-from logdetective.server.database.base import init, destroy
+from logdetective.server.database.base import init_async, destroy
 from logdetective.server.database.models import AnalyzeRequestMetrics, EndpointType
 
 
@@ -19,18 +19,18 @@ class DatabaseFactory:  # pylint: disable=too-few-public-methods
         Database container is started by `tox -e pytest` command,
         connection details for the container are specified in tox.ini"""
 
-        return "postgresql+psycopg2://user:password@localhost:5432/test_db"
+        return "postgresql+asyncpg://user:password@localhost:5432/test_db"
 
     def __init__(self):
         """Connect to a postgres container for testing purposes."""
-        self.engine = create_engine(self.get_pg_test_url())
-        self.SessionFactory = sessionmaker(autoflush=True, bind=self.engine)
+        self.engine = create_async_engine(self.get_pg_test_url())
+        self.SessionFactory = async_sessionmaker(autoflush=True, bind=self.engine)
         flexmock(base, engine=self.engine, SessionFactory=self.SessionFactory)
 
     @contextmanager
-    def make_new_db(self):
+    async def make_new_db(self):
         try:
-            init()
+            await init_async()
             yield self.SessionFactory
         finally:
             destroy()

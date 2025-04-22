@@ -1,5 +1,6 @@
 import pytest
 
+
 from sqlalchemy.exc import IntegrityError
 
 from test_helpers import (
@@ -14,8 +15,9 @@ from logdetective.server.database.models import (
 )
 
 
-def test_create_and_get_GitlabMergeRequestJobs():
-    with DatabaseFactory().make_new_db() as _:
+@pytest.mark.asyncio
+async def test_create_and_get_GitlabMergeRequestJobs():
+    async with DatabaseFactory().make_new_db() as _:
         forge = Forge.gitlab_com
         id_ = GitlabMergeRequestJobs.create(
             forge, project_id=123, mr_iid=456, job_id=11
@@ -53,8 +55,9 @@ def test_create_and_get_GitlabMergeRequestJobs():
         assert mr is None
 
 
-def test_create_and_get_Comments():
-    with DatabaseFactory().make_new_db() as _:
+@pytest.mark.asyncio
+async def test_create_and_get_Comments():
+    async with DatabaseFactory().make_new_db() as _:
         forge = Forge.gitlab_com
         mr_id = GitlabMergeRequestJobs.create(
             forge, project_id=123, mr_iid=456, job_id=11
@@ -147,8 +150,9 @@ def test_create_and_get_Comments():
         assert comment.id
 
 
-def test_create_and_get_Reactions():
-    with DatabaseFactory().make_new_db() as _:
+@pytest.mark.asyncio
+async def test_create_and_get_Reactions():
+    async with DatabaseFactory().make_new_db() as _:
         forge = Forge.gitlab_com
         db_id = Reactions.create_or_update(
             forge,
